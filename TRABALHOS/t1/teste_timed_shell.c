@@ -90,13 +90,13 @@ int wstatus;
 int main(void)
 {
     /* Caminho do executável(binário) */
-    char * caminho = "/bin/uname";
+    char * caminho = "/bin/sleep";
 
     // char *arg1 = "-lh";
 
     /* argumentos do executável Ex: ls -a /home/adrian/UnB 
     -> ls é o comando e todo o resto argumentos */
-    char * arg1 = "-m";
+    char * arg1 = "2.31";
 
     /* Fork é necessário pois o exec transfere a imagem do processo para a 
     imagem do binário(Processo deixa de existir)
@@ -111,6 +111,7 @@ int main(void)
         /* Executa o binário, deve terminar com NULL
         Repete o caminho do binário duas vezes*/
         execl(caminho, caminho, /*arg2,*/ arg1, NULL); // substitui o processo
+        exit(0);
         /*Nada abaixo será executado!!*/
         // wait(&wstatus);
         // printf("errno: %s -- exit status filho: %d \n", strerror(errno), WEXITSTATUS(wstatus)); 
