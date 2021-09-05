@@ -75,28 +75,33 @@ int main(void)
         /* Filho executa o binário */
         if(getppid() == bashpid)
         {
-            pid_t filho = fork();
+            pid_t filho, wfilho; 
+            filho = fork();
        
         /* Captura tempo antes da execução*/
             gettimeofday(&antes, NULL);
             if(filho == 0) 
             {
-                //teste 
+                /*//teste 
                 printf("Fui criado, sou %d e meu pai é %d\n", getpid(), getppid());
+                */
+
                 /* 
                 printf("Antes: %ld sec e %ld micsec\n", antes.tv_sec, antes.tv_usec);
-                */
+                
                 printf("caminho: %s - ", caminho);
                 for(int i = 0; i < 2; i++)
                 {
                     printf(" arg[%d]: %s -", i+1, args[i]);
                 }
                 printf("\n");
+                */
+
                 /* Executa o binário, deve terminar com NULL
                 o nome do binário é o primeiro argumento em argv, por conveção*/
                 setbuf(stdout, NULL);
-                if(execvp(caminho, args) == -1) // substitui o processo
-                    exit(errno);
+                execvp(caminho, args); // substitui o processo
+                _exit(errno);
 
                 /*Nada abaixo será executado!!*/
                 // wait(&wstatus);
@@ -105,11 +110,14 @@ int main(void)
             else
             {
                 // Espera retorno do filho
-                filho = wait(&wstatus);
-                kill(filho, SIGKILL);
+                do 
+                {
+                    wfilho = waitpid(filho, &wstatus, WUNTRACED);
+                    /* Captura tempo depois da execução */
+                    gettimeofday(&depois, NULL);
+                }
+                while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
                 
-                /* Captura tempo depois da execução */
-                gettimeofday(&depois, NULL);
                 /* Intervalo de execução do comando */
                 long double decorrido = ((long double) ((depois.tv_sec * MICTOSEC + depois.tv_usec) - 
                                             (antes.tv_sec * MICTOSEC + antes.tv_usec))) / MICTOSEC;
@@ -123,14 +131,14 @@ int main(void)
                 if(WIFEXITED(wstatus))
                 {
                     // Se teve status de ero, printa o erro
-                    if(WEXITSTATUS(wstatus)!=0)
+                    if(WEXITSTATUS(wstatus) > 1)
                     {
                         setbuf(stdout, NULL);
                         printf("> Erro: %s\n", strerror(WEXITSTATUS(wstatus)));
                     }
                     setbuf(stdout, NULL);
                     printf("> Demorou %.1Lf segundos, retornou %d\n", decorrido, WEXITSTATUS(wstatus));
-                    printf("-----------------------------------\n");
+                    //printf("-----------------------------------\n");
                 }
 
                 // t_total += decorrido;

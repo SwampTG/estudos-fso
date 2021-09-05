@@ -111,7 +111,7 @@ int main(void)
         /* Executa o binário, deve terminar com NULL
         Repete o caminho do binário duas vezes*/
         execl(caminho, caminho, /*arg2,*/ arg1, NULL); // substitui o processo
-        exit(0);
+        exit(errno);
         /*Nada abaixo será executado!!*/
         // wait(&wstatus);
         // printf("errno: %s -- exit status filho: %d \n", strerror(errno), WEXITSTATUS(wstatus)); 
