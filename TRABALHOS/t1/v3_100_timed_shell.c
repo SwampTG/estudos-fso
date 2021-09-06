@@ -136,6 +136,17 @@ int main(void)
                         setbuf(stdout, NULL);
                         printf("> Erro: %s\n", strerror(WEXITSTATUS(wstatus)));
                     }
+                    else if(WEXITSTATUS(wstatus) == 1 )
+                    { 
+                        char compara[] = "false\0"; 
+                        int check = strncmp(binnome, compara, 5); 
+
+                        if(check) 
+                        { 
+                            setbuf(stdout, NULL); 
+                            printf("> Erro: %s\n", strerror(WEXITSTATUS(wstatus))); 
+                        } 
+                    }
                     setbuf(stdout, NULL);
                     printf("> Demorou %.1Lf segundos, retornou %d\n", decorrido, WEXITSTATUS(wstatus));
                     //printf("-----------------------------------\n");
