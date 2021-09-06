@@ -100,7 +100,9 @@ int main(void)
                 /* Executa o binário, deve terminar com NULL
                 o nome do binário é o primeiro argumento em argv, por conveção*/
                 setbuf(stdout, NULL);
-                execvp(caminho, args); // substitui o processo
+                execve(caminho, args, NULL); // substitui o processo
+                setbuf(stdout, NULL);
+                printf("> Erro: %s\n", strerror(errno));
                 _exit(errno);
 
                 /*Nada abaixo será executado!!*/
@@ -116,7 +118,7 @@ int main(void)
                     /* Captura tempo depois da execução */
                     gettimeofday(&depois, NULL);
                 }
-                while (!WIFEXITED(wstatus) && !WIFSIGNALED(wstatus));
+                while (!WIFEXITED(wstatus));
                 
                 /* Intervalo de execução do comando */
                 long double decorrido = ((long double) ((depois.tv_sec * MICTOSEC + depois.tv_usec) - 
@@ -131,12 +133,13 @@ int main(void)
                 if(WIFEXITED(wstatus))
                 {
                     // Se teve status de ero, printa o erro
+                    /*
                     if(WEXITSTATUS(wstatus) > 1)
                     {
-                        setbuf(stdout, NULL);
-                        printf("> Erro: %s\n", strerror(WEXITSTATUS(wstatus)));
+                        
                     }
-                    else if(WEXITSTATUS(wstatus) == 1 )
+                    */
+                    /*else if(WEXITSTATUS(wstatus) == 1 )
                     { 
                         char compara[] = "false\0"; 
                         int check = strncmp(binnome, compara, 5); 
@@ -147,6 +150,7 @@ int main(void)
                             printf("> Erro: %s\n", strerror(WEXITSTATUS(wstatus))); 
                         } 
                     }
+                    */
                     setbuf(stdout, NULL);
                     printf("> Demorou %.1Lf segundos, retornou %d\n", decorrido, WEXITSTATUS(wstatus));
                     //printf("-----------------------------------\n");
